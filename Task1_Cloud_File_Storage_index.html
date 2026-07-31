@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cloud Computing Internship — Tasks 1, 2 & 4</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root{
+    --ink:#141414;
+    --ink-soft:#3c3c3c;
+    --paper:#f7f6f3;
+    --panel:#ffffff;
+    --line:#e4e1d8;
+    --line-soft:#eeece4;
+    --accent:#8a6d3b;       /* muted brass/gold */
+    --accent-deep:#5c4823;
+    --navy:#1c2b3a;         /* deep slate navy for contrast panels */
+    --ok:#3f7a5c;
+    --ok-bg:#eaf3ee;
+    --warn:#a3453b;
+    --warn-bg:#f8ece9;
+    --serif: 'Playfair Display', Georgia, serif;
+    --sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    --shadow-sm: 0 1px 2px rgba(20,20,20,0.04), 0 1px 1px rgba(20,20,20,0.03);
+    --shadow-md: 0 8px 24px rgba(20,20,20,0.06), 0 2px 6px rgba(20,20,20,0.04);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(1100px 380px at 12% -8%, rgba(138,109,59,0.06), transparent 60%),
+      var(--paper);
+    color:var(--ink);
+    font-family:var(--sans);
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1040px;margin:0 auto;padding:56px 24px 96px;}
+
+  header{
+    padding-bottom:28px;
+    margin-bottom:36px;
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    flex-wrap:wrap;
+    gap:16px;
+    position:relative;
+  }
+  header::after{
+    content:'';
+    position:absolute;
+    left:0;right:0;bottom:0;
+    height:1px;
+    background:linear-gradient(90deg, var(--ink) 0%, var(--line) 55%, transparent 100%);
+  }
+  header h1{
+    font-family:var(--serif);
+    font-weight:600;
+    font-size:2.35rem;
+    margin:0;
+    letter-spacing:-0.01em;
+    color:var(--ink);
+  }
+  header .tag{
+    font-family:var(--sans);
+    font-weight:600;
+    font-size:0.68rem;
+    text-transform:uppercase;
+    letter-spacing:0.16em;
+    color:var(--accent-deep);
+    background:#fff;
+    border:1px solid var(--accent);
+    padding:7px 14px;
+    border-radius:100px;
+    box-shadow:var(--shadow-sm);
+  }
+
+  nav.tasks{
+    display:flex;
+    gap:6px;
+    margin-bottom:0;
+    background:transparent;
+    padding:0;
+  }
+  nav.tasks button{
+    flex:1;
+    background:var(--panel);
+    border:1px solid var(--line);
+    padding:15px 12px;
+    font-family:var(--sans);
+    font-weight:600;
+    font-size:0.76rem;
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+    cursor:pointer;
+    color:var(--ink-soft);
+    border-radius:8px;
+    transition:background 0.18s ease, color 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+    box-shadow:var(--shadow-sm);
+  }
+  nav.tasks button:hover{
+    border-color:var(--accent);
+    color:var(--ink);
+  }
+  nav.tasks button.active{
+    background:var(--ink);
+    color:var(--paper);
+    border-color:var(--ink);
+    box-shadow:var(--shadow-md);
+  }
+
+  section.panel{
+    display:none;
+    background:var(--panel);
+    border:1px solid var(--line);
+    padding:38px 40px;
+    margin-top:26px;
+    border-radius:14px;
+    box-shadow:var(--shadow-md);
+    position:relative;
+    overflow:hidden;
+  }
+  section.panel::before{
+    content:'';
+    position:absolute;
+    top:0;left:0;right:0;
+    height:3px;
+    background:linear-gradient(90deg, var(--accent), var(--navy) 65%, var(--accent));
+  }
+  section.panel.active{display:block;}
+  section.panel h2{
+    margin-top:0;
+    font-family:var(--serif);
+    font-weight:600;
+    font-size:1.55rem;
+    display:flex;
+    align-items:baseline;
+    gap:12px;
+    color:var(--ink);
+  }
+  section.panel h2 .num{
+    font-family:var(--mono);
+    color:var(--accent);
+    font-size:0.85rem;
+    font-weight:500;
+    letter-spacing:0.02em;
+  }
+  p.desc{color:var(--ink-soft);line-height:1.65;font-size:0.96rem;max-width:68ch;}
+  .row{display:flex;gap:20px;flex-wrap:wrap;margin:22px 0;}
+  .col{flex:1;min-width:260px;}
+  label{
+    display:block;
+    font-family:var(--sans);
+    font-weight:600;
+    font-size:0.68rem;
+    text-transform:uppercase;
+    letter-spacing:0.09em;
+    color:#8a8272;
+    margin-bottom:8px;
+  }
+  input[type=file], input[type=text], textarea{
+    width:100%;
+    padding:11px 13px;
+    border:1px solid var(--line);
+    border-radius:8px;
+    font-family:var(--sans);
+    font-size:0.88rem;
+    background:#fbfaf7;
+    color:var(--ink);
+    transition:border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  input[type=file]:focus, input[type=text]:focus, textarea:focus{
+    outline:none;
+    border-color:var(--accent);
+    box-shadow:0 0 0 3px rgba(138,109,59,0.12);
+  }
+  textarea{resize:vertical;min-height:76px;font-family:var(--sans);}
+  button.action{
+    background:var(--ink);
+    color:#fdfcf9;
+    border:none;
+    padding:12px 22px;
+    font-family:var(--sans);
+    font-weight:600;
+    font-size:0.8rem;
+    letter-spacing:0.02em;
+    border-radius:8px;
+    cursor:pointer;
+    margin-right:10px;
+    margin-top:8px;
+    box-shadow:var(--shadow-sm);
+    transition:background 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+  }
+  button.action:hover{background:var(--accent-deep);box-shadow:var(--shadow-md);transform:translateY(-1px);}
+  button.action:active{transform:translateY(0);}
+  button.action.secondary{background:transparent;color:var(--ink);border:1px solid var(--line);box-shadow:none;}
+  button.action.secondary:hover{background:var(--paper);border-color:var(--ink);}
+  button.action.danger{background:var(--warn);}
+  button.action.danger:hover{background:#8a352c;}
+
+  table{width:100%;border-collapse:collapse;margin-top:20px;font-size:0.87rem;}
+  th{
+    text-align:left;
+    font-family:var(--sans);
+    font-weight:600;
+    font-size:0.68rem;
+    text-transform:uppercase;
+    letter-spacing:0.07em;
+    color:#8a8272;
+    border-bottom:1.5px solid var(--ink);
+    padding:10px 8px;
+  }
+  td{padding:12px 8px;border-bottom:1px solid var(--line-soft);vertical-align:middle;color:var(--ink-soft);}
+  tbody tr:hover td{background:rgba(138,109,59,0.03);}
+
+  .pill{
+    display:inline-block;
+    font-family:var(--sans);
+    font-weight:600;
+    font-size:0.64rem;
+    padding:3px 10px;
+    border-radius:100px;
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+  }
+  .pill.ok{background:var(--ok-bg);color:var(--ok);}
+  .pill.dup{background:var(--warn-bg);color:var(--warn);}
+
+  .link-btn{
+    background:none;border:none;color:var(--accent-deep);
+    font-family:var(--sans);font-weight:600;font-size:0.8rem;cursor:pointer;
+    text-decoration:none;border-bottom:1px solid rgba(138,109,59,0.35);
+    padding:0 0 1px;margin-right:14px;transition:border-color 0.15s ease, color 0.15s ease;
+  }
+  .link-btn:hover{color:var(--accent);border-color:var(--accent);}
+  .link-btn.del{color:var(--warn);border-color:rgba(163,69,59,0.35);}
+  .link-btn.del:hover{color:#8a352c;border-color:#8a352c;}
+
+  .log{
+    background:var(--navy);
+    color:#c9d6cf;
+    font-family:var(--mono);
+    font-size:0.78rem;
+    padding:16px 18px;
+    border-radius:10px;
+    max-height:190px;
+    overflow-y:auto;
+    margin-top:20px;
+    line-height:1.7;
+    box-shadow:inset 0 1px 3px rgba(0,0,0,0.2);
+  }
+  .log .t{color:#9fb8a8;}
+
+  .empty{
+    padding:30px;
+    text-align:center;
+    color:#9b9484;
+    font-family:var(--sans);
+    font-size:0.85rem;
+    border:1px dashed var(--line);
+    border-radius:10px;
+    margin-top:18px;
+    background:#fcfbf8;
+  }
+
+  .note{
+    background:#faf7ef;
+    border:1px solid #ecdfc0;
+    border-left:3px solid var(--accent);
+    padding:14px 18px;
+    border-radius:8px;
+    font-size:0.84rem;
+    color:#5c4823;
+    margin-top:22px;
+    line-height:1.6;
+  }
+  .note code{
+    background:rgba(92,72,35,0.08);
+    padding:1px 6px;
+    border-radius:4px;
+    font-family:var(--mono);
+    font-size:0.82em;
+  }
+
+  .arch{
+    font-family:var(--mono);
+    font-size:0.76rem;
+    background:var(--navy);
+    color:#d7e0e8;
+    border:1px solid var(--line);
+    padding:20px 22px;
+    border-radius:10px;
+    margin-top:20px;
+    line-height:1.85;
+    white-space:pre;
+    overflow-x:auto;
+    box-shadow:inset 0 1px 3px rgba(0,0,0,0.2);
+  }
+
+  .stat-row{display:flex;gap:16px;flex-wrap:wrap;margin:20px 0 8px;}
+  .stat{
+    flex:1;min-width:130px;
+    background:var(--panel);
+    border:1px solid var(--line);
+    padding:16px 18px;
+    border-radius:10px;
+    box-shadow:var(--shadow-sm);
+  }
+  .stat .n{font-size:1.7rem;font-family:var(--serif);font-weight:600;color:var(--navy);}
+  .stat .l{font-size:0.66rem;text-transform:uppercase;letter-spacing:0.07em;color:#8a8272;font-weight:600;margin-top:2px;}
+
+  footer{
+    margin-top:48px;
+    padding-top:20px;
+    font-family:var(--sans);
+    font-size:0.74rem;
+    color:#9b9484;
+    text-align:center;
+    letter-spacing:0.02em;
+  }
+</style>
+</head>
+<body><div class="wrap"><header><h1>Cloud Computing Internship</h1></header><nav class="tasks">
+<button class="active">Demo</button>
+</nav><section class="panel active" id="t1">
+    <h2><span class="num">01</span> Cloud File Storage System</h2>
+    <p class="desc">Upload, view, download, and delete files through a simulated cloud object store. Every file gets a unique key and a shareable link, the way an S3 pre-signed URL would work in production.</p>
+
+    <div class="row">
+      <div class="col">
+        <label>Select file to upload</label>
+        <input type="file" id="t1-file">
+        <button class="action" onclick="uploadFile()">Upload to cloud</button>
+      </div>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat"><div class="n" id="t1-count">0</div><div class="l">Files stored</div></div>
+      <div class="stat"><div class="n" id="t1-size">0 KB</div><div class="l">Total size</div></div>
+    </div>
+
+    <table>
+      <thead><tr><th>File</th><th>Size</th><th>Uploaded</th><th>Actions</th></tr></thead>
+      <tbody id="t1-table"></tbody>
+    </table>
+    <div class="empty" id="t1-empty">No files yet — upload one above to populate the store.</div>
+
+    <div class="note">In production: files stream to an <b>AWS S3 bucket</b> via <code>boto3.upload_fileobj()</code>; metadata (name, size, owner, timestamp) is written to <b>DynamoDB</b>; the "Get link" button below issues an S3 <b>pre-signed URL</b> valid for 15 minutes.</div>
+  </section></div><script>
+// ---------- Navigation ----------
+document.querySelectorAll('nav.tasks button').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('nav.tasks button').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('section.panel').forEach(s=>s.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.target).classList.add('active');
+  });
+});
+
+// ---------- Utility ----------
+function fmtBytes(b){
+  if(b < 1024) return b + ' B';
+  if(b < 1024*1024) return (b/1024).toFixed(1) + ' KB';
+  return (b/1024/1024).toFixed(2) + ' MB';
+}
+function fmtTime(d){
+  return d.toLocaleString(undefined, {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit', second:'2-digit'});
+}
+async function sha256(str){
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+// ---------- TASK 1: File Storage ----------
+let t1Files = [];
+function renderT1(){
+  const tbody = document.getElementById('t1-table');
+  const empty = document.getElementById('t1-empty');
+  tbody.innerHTML = '';
+  empty.style.display = t1Files.length ? 'none' : 'block';
+  let totalSize = 0;
+  t1Files.forEach((f, i)=>{
+    totalSize += f.size;
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${f.name}</td><td>${fmtBytes(f.size)}</td><td>${fmtTime(f.uploaded)}</td>
+      <td>
+        <button class="link-btn" onclick="downloadT1(${i})">Download</button>
+        <button class="link-btn" onclick="shareT1(${i})">Get link</button>
+        <button class="link-btn del" onclick="deleteT1(${i})">Delete</button>
+      </td>`;
+    tbody.appendChild(tr);
+  });
+  document.getElementById('t1-count').textContent = t1Files.length;
+  document.getElementById('t1-size').textContent = fmtBytes(totalSize);
+}
+function uploadFile(){
+  const input = document.getElementById('t1-file');
+  if(!input.files.length){ alert('Choose a file first.'); return; }
+  const file = input.files[0];
+  const reader = new FileReader();
+  reader.onload = e=>{
+    t1Files.push({name:file.name, size:file.size, uploaded:new Date(), dataUrl:e.target.result});
+    input.value='';
+    renderT1();
+  };
+  reader.readAsDataURL(file);
+}
+function downloadT1(i){
+  const f = t1Files[i];
+  const a = document.createElement('a');
+  a.href = f.dataUrl; a.download = f.name; a.click();
+}
+function shareT1(i){
+  const f = t1Files[i];
+  const fakeUrl = `https://your-bucket.s3.amazonaws.com/${encodeURIComponent(f.name)}?token=${Math.random().toString(36).slice(2,10)}&expires=900`;
+  navigator.clipboard?.writeText(fakeUrl).catch(()=>{});
+  alert('Shareable link (simulated pre-signed URL, 15 min expiry):\n\n' + fakeUrl + '\n\n(Copied to clipboard)');
+}
+function deleteT1(i){
+  t1Files.splice(i,1);
+  renderT1();
+}
+renderT1();
+
+// ---------- TASK 2: Deduplication ----------
+let t2Records = []; // {name, hash}
+function logT2(msg){
+  const log = document.getElementById('t2-log');
+  const line = document.createElement('div');
+  line.innerHTML = `<span class="t">[${new Date().toLocaleTimeString()}]</span> ${msg}`;
+  log.appendChild(line);
+  log.scrollTop = log.scrollHeight;
+}
+function renderT2(){
+  const tbody = document.getElementById('t2-table');
+  const empty = document.getElementById('t2-empty');
+  tbody.innerHTML = '';
+  empty.style.display = t2Records.length ? 'none' : 'block';
+  t2Records.forEach(r=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${r.name}</td><td>${r.hash.slice(0,16)}...</td><td><span class="pill ok">unique</span></td>`;
+    tbody.appendChild(tr);
+  });
+  document.getElementById('t2-unique').textContent = t2Records.length;
+}
+let t2Blocked = 0;
+async function submitRecord(){
+  const name = document.getElementById('t2-name').value.trim();
+  const data = document.getElementById('t2-data').value.trim();
+  if(!name || !data){ alert('Fill in both name and data.'); return; }
+  const hash = await sha256(data);
+  const dup = t2Records.find(r=>r.hash === hash);
+  if(dup){
+    t2Blocked++;
+    document.getElementById('t2-blocked').textContent = t2Blocked;
+    logT2(`REJECTED — "${name}" matches existing hash of "${dup.name}" <span style="color:#e08a6b">[duplicate]</span>`);
+  } else {
+    t2Records.push({name, hash});
+    logT2(`STORED — "${name}" hashed to ${hash.slice(0,12)}... <span style="color:#8fbfa8">[unique]</span>`);
+    renderT2();
+  }
+  document.getElementById('t2-name').value='';
+  document.getElementById('t2-data').value='';
+}
+function loadSampleDup(){
+  if(t2Records.length === 0){
+    document.getElementById('t2-name').value = 'Student_Record_001';
+    document.getElementById('t2-data').value = 'Name: Rahul Sharma, Course: Cloud Computing, Grade: A';
+  } else {
+    document.getElementById('t2-name').value = 'Student_Record_001_copy';
+    document.getElementById('t2-data').value = 'Name: Rahul Sharma, Course: Cloud Computing, Grade: A';
+  }
+}
+renderT2();
+
+// ---------- TASK 4: Backup & Restore ----------
+let t4Backups = [];
+let t4Interval = null;
+function renderT4(){
+  const tbody = document.getElementById('t4-table');
+  const empty = document.getElementById('t4-empty');
+  tbody.innerHTML = '';
+  empty.style.display = t4Backups.length ? 'none' : 'block';
+  let totalReduction = 0;
+  t4Backups.forEach((b, i)=>{
+    totalReduction += b.reduction;
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${b.name}</td><td>${fmtBytes(b.original)} → ${fmtBytes(b.compressed)} (-${b.reduction}%)</td><td>${fmtTime(b.time)}</td>
+      <td><button class="link-btn" onclick="restoreT4(${i})">Restore</button></td>`;
+    tbody.appendChild(tr);
+  });
+  document.getElementById('t4-count').textContent = t4Backups.length;
+  document.getElementById('t4-compressed').textContent = t4Backups.length ? Math.round(totalReduction/t4Backups.length) + '%' : '0%';
+}
+function runBackup(){
+  const input = document.getElementById('t4-file');
+  if(!input.files.length){ alert('Choose a file first.'); return; }
+  const file = input.files[0];
+  const reader = new FileReader();
+  reader.onload = e=>{
+    const reduction = 15 + Math.round(Math.random()*35); // simulated compression 15-50%
+    const compressed = Math.round(file.size * (1 - reduction/100));
+    t4Backups.unshift({
+      name: file.name,
+      original: file.size,
+      compressed: compressed,
+      reduction: reduction,
+      time: new Date(),
+      dataUrl: e.target.result
+    });
+    input.value='';
+    renderT4();
+  };
+  reader.readAsDataURL(file);
+}
+function restoreT4(i){
+  const b = t4Backups[i];
+  const a = document.createElement('a');
+  a.href = b.dataUrl; a.download = 'restored_' + b.name; a.click();
+  alert(`Restored "${b.name}" from backup point dated ${fmtTime(b.time)}.`);
+}
+function toggleSchedule(){
+  if(t4Interval){
+    clearInterval(t4Interval);
+    t4Interval = null;
+    alert('Auto-backup demo stopped.');
+    return;
+  }
+  const input = document.getElementById('t4-file');
+  if(!input.files.length){ alert('Choose a file first, then enable auto-backup.'); return; }
+  alert('Auto-backup demo started — a new backup point will be created every 10 seconds using the currently selected file.');
+  t4Interval = setInterval(runBackup, 10000);
+}
+renderT4();
+</script>
+</body>
+</html>
